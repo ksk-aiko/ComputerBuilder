@@ -1,0 +1,88 @@
+/* PCビルダー用のカスタムスタイル - 青いテーマ */
+
+:root {
+  --primary-blue: #007bff;
+  --primary-blue-dark: #0069d9;
+  --primary-blue-light: #cce5ff;
+  --primary-blue-lighter: #e6f2ff;
+  --white: #ffffff;
+}
+
+body {
+  background-color: var(--primary-blue-lighter);
+  color: #343a40;
+}
+
+.container {
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 123, 255, 0.1);
+  padding: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: var(--primary-blue);
+  font-weight: bold;
+  border-bottom: 3px solid var(--primary-blue);
+  padding-bottom: 10px;
+}
+
+h4 {
+  color: var(--primary-blue-dark);
+  border-left: 5px solid var(--primary-blue);
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
+
+section {
+  background-color: var(--primary-blue-lighter);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+label {
+  color: var(--primary-blue-dark);
+  font-weight: 500;
+}
+
+.form-control {
+  border-color: var(--primary-blue-light);
+}
+
+.form-control:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#addPCButton {
+  background-color: var(--primary-blue);
+  border-color: var(--primary-blue);
+  padding: 10px 30px;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+#addPCButton:hover {
+  background-color: var(--primary-blue-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 123, 255, 0.3);
+}
+
+#pcList {
+  border-top: 2px dashed var(--primary-blue-light);
+  padding-top: 20px;
+}
+
+/* PC一覧のスタイル（将来的に追加されるPCカードのスタイル） */
+.pc-card {
+  background-color: var(--white);
+  border-left: 5px solid var(--primary-blue);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.15);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
