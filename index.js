@@ -20,6 +20,18 @@ const ramList = fetch(config.url + "?type=ram")
     return data;
   });
 
+const hddList = fetch(config.url + "?type=hdd")
+  .then((response) => response.json())
+  .then((data) => {
+    return data;
+  });
+
+const ssdList = fetch(config.url + "?type=ssd")
+  .then((response) => response.json())
+  .then((data) => {
+    return data;
+  });
+
 function setCPUBrand() {
   // Get brand name from cpuList
   const brands = cpuList.then((cpus) => {
@@ -155,7 +167,6 @@ function setRAMBrand() {
   });
 }
 
-
 function setRAMModel() {
   document.getElementById("ramBrand").addEventListener("change", function () {
     const select = document.getElementById("ramBrand");
@@ -181,9 +192,9 @@ function setRAMModel() {
       let filteredModels = sortedArray;
 
       if (quantity) {
-        filteredModels = sortedArray.filter(model => {
+        filteredModels = sortedArray.filter((model) => {
           return model.includes(`${quantity}x`);
-        })
+        });
       }
 
       if (filteredModels.length > 0) {
@@ -192,7 +203,7 @@ function setRAMModel() {
           option.value = model;
           option.textContent = model;
           modelSelect.appendChild(option);
-        })
+        });
       } else {
         // If no models match, add a default option
         const defaultOption = document.createElement("option");
@@ -200,7 +211,6 @@ function setRAMModel() {
         defaultOption.textContent = "No models available for this brand";
         modelSelect.appendChild(defaultOption);
       }
-
     });
   });
 }
@@ -209,14 +219,144 @@ function updateModelsByQuantity() {
   document.getElementById("howMany").addEventListener("change", function () {
     const ramBrand = document.getElementById("ramBrand");
     if (ramBrand.value) {
-      const event = new Event('change');
+      const event = new Event("change");
       ramBrand.dispatchEvent(event);
     }
-  
-})
+  });
 }
 
+function setStorageBrand() {
+  document
+    .getElementById("storageType")
+    .addEventListener("change", function () {
+      document.getElementById("storage").value = ""; // Clear previous storage input
+      document.getElementById("storageModel").innerHTML = ""; // Clear previous model options
+      document.getElementById("storageBrand").innerHTML = ""; // Clear previous options
+      const storageType = document.getElementById("storageType").value;
+      if (storageType == "hdd") {
+        // Get brand name from hddList
+        const brands = hddList.then((hdds) => {
+          return hdds.map((hdd) => hdd.Brand);
+        });
+        // Eliminate duplicates
+        const uniqueBrands = brands.then((brandArray) => {
+          return [...new Set(brandArray)];
+        });
+        // Sort brands alphabetically
+        const sortedBrands = uniqueBrands.then((uniqueArray) => {
+          return uniqueArray.sort();
+        });
+        // selectタグ内にoptionを追加
+        const select = document.getElementById("storageBrand");
+        sortedBrands.then((sortedArray) => {
+          sortedArray.forEach((brand) => {
+            const option = document.createElement("option");
+            option.value = brand;
+            option.textContent = brand;
+            select.appendChild(option);
+          });
+        });
+      } else if (storageType == "ssd") {
+        // Get brand name from ssdList
+        const brands = ssdList.then((ssds) => {
+          return ssds.map((ssd) => ssd.Brand);
+        });
+        // Eliminate duplicates
+        const uniqueBrands = brands.then((brandArray) => {
+          return [...new Set(brandArray)];
+        });
+        // Sort brands alphabetically
+        const sortedBrands = uniqueBrands.then((uniqueArray) => {
+          return uniqueArray.sort();
+        });
+        // selectタグ内にoptionを追加
+        const select = document.getElementById("storageBrand");
+        sortedBrands.then((sortedArray) => {
+          sortedArray.forEach((brand) => {
+            const option = document.createElement("option");
+            option.value = brand;
+            option.textContent = brand;
+            select.appendChild(option);
+          });
+        });
+      }
+    });
+}
 
+function setStorageModel() {
+  document
+    .getElementById("storageBrand")
+    .addEventListener("change", function () {
+      const select = document.getElementById("storageBrand");
+      const brand = select.value;
+      const storageType = document.getElementById("storageType").value;
+      const storage = document.getElementById("storage").value;
+
+      let modelsPromise;
+      if (storageType === "hdd") {
+        modelsPromise = hddList.then((hdds) => {
+          return hdds
+            .filter((hdd) => hdd.Brand === brand)
+            .map((hdd) => hdd.Model);
+        });
+      } else if (storageType === "ssd") {
+        modelsPromise = ssdList.then((ssds) => {
+          return ssds
+            .filter((ssd) => ssd.Brand === brand)
+            .map((ssd) => ssd.Model);
+        });
+      }
+
+      // Eliminate duplicates
+      const uniqueModels = modelsPromise.then((modelArray) => {
+        return [...new Set(modelArray)];
+      });
+      // Sort models alphabetically
+      const sortedModels = uniqueModels.then((uniqueArray) => {
+        return uniqueArray.sort();
+      });
+
+      sortedModels.then((sortedArray) => {
+        let filteredModels = sortedArray;
+        if (storage) {
+          filteredModels = sortedArray.filter((model) => {
+            return model.includes(storage);
+          });
+        }
+
+        if (filteredModels.length > 0) {
+          // selectタグ内にoptionを追加
+          const modelSelect = document.getElementById("storageModel");
+          modelSelect.innerHTML = ""; // Clear previous options
+            filteredModels.forEach((model) => {
+              const option = document.createElement("option");
+              option.value = model;
+              option.textContent = model;
+              modelSelect.appendChild(option);
+            });
+        } else {
+          // If no models match, add a default option
+          const modelSelect = document.getElementById("storageModel");
+          modelSelect.innerHTML = ""; // Clear previous options
+          const defaultOption = document.createElement("option");
+          defaultOption.value = "";
+          defaultOption.textContent = "No models available for this brand";
+          modelSelect.appendChild(defaultOption);
+        }
+      });
+    });
+}
+
+function updateModelsByStorage() {
+  document.getElementById("storage").addEventListener("change", function () {
+    document.getElementById("storageModel").innerHTML = ""; // Clear previous options
+    const storageBrand = document.getElementById("storageBrand");
+    if (storageBrand.value) {
+      const event = new Event("change");
+      storageBrand.dispatchEvent(event);
+    }
+  });
+}
 
 function main() {
   setCPUBrand();
@@ -226,6 +366,9 @@ function main() {
   setRAMBrand();
   setRAMModel();
   updateModelsByQuantity();
+  setStorageBrand();
+  setStorageModel();
+  updateModelsByStorage();
 }
 
 // Call the main function to execute the code
