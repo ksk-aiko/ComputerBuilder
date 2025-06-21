@@ -131,16 +131,91 @@ function setGPUModel() {
 }
 
 function setRAMBrand() {
-
+  // Get brand name from ramList
+  const brands = ramList.then((rams) => {
+    return rams.map((ram) => ram.Brand);
+  });
+  // Eliminate duplicates
+  const uniqueBrands = brands.then((brandArray) => {
+    return [...new Set(brandArray)];
+  });
+  // Sort brands alphabetically
+  const sortedBrands = uniqueBrands.then((uniqueArray) => {
+    return uniqueArray.sort();
+  });
+  // selectタグ内にoptionを追加
+  const select = document.getElementById("ramBrand");
+  sortedBrands.then((sortedArray) => {
+    sortedArray.forEach((brand) => {
+      const option = document.createElement("option");
+      option.value = brand;
+      option.textContent = brand;
+      select.appendChild(option);
+    });
+  });
 }
 
-function setRAMModel() {
 
+function setRAMModel() {
+  document.getElementById("ramBrand").addEventListener("change", function () {
+    const select = document.getElementById("ramBrand");
+    const brand = select.value;
+    const quantity = document.getElementById("howMany").value;
+
+    // Get models for the selected brand
+    const models = ramList.then((rams) => {
+      return rams.filter((ram) => ram.Brand === brand).map((ram) => ram.Model);
+    });
+    // Eliminate duplicates
+    const uniqueModels = models.then((modelArray) => {
+      return [...new Set(modelArray)];
+    });
+    // Sort models alphabetically
+    const sortedModels = uniqueModels.then((uniqueArray) => {
+      return uniqueArray.sort();
+    });
+    // selectタグ内にoptionを追加
+    const modelSelect = document.getElementById("ramModel");
+    modelSelect.innerHTML = ""; // Clear previous options
+    sortedModels.then((sortedArray) => {
+      let filteredModels = sortedArray;
+
+      if (quantity) {
+        filteredModels = sortedArray.filter(model => {
+          return model.includes(`${quantity}x`);
+        })
+      }
+
+      if (filteredModels.length > 0) {
+        filteredModels.forEach((model) => {
+          const option = document.createElement("option");
+          option.value = model;
+          option.textContent = model;
+          modelSelect.appendChild(option);
+        })
+      } else {
+        // If no models match, add a default option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "No models available for this brand";
+        modelSelect.appendChild(defaultOption);
+      }
+
+    });
+  });
 }
 
 function updateModelsByQuantity() {
-    
+  document.getElementById("howMany").addEventListener("change", function () {
+    const ramBrand = document.getElementById("ramBrand");
+    if (ramBrand.value) {
+      const event = new Event('change');
+      ramBrand.dispatchEvent(event);
+    }
+  
+})
 }
+
 
 
 function main() {
@@ -148,6 +223,9 @@ function main() {
   setCPUModel();
   setGPUBrand();
   setGPUModel();
+  setRAMBrand();
+  setRAMModel();
+  updateModelsByQuantity();
 }
 
 // Call the main function to execute the code
