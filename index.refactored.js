@@ -35,7 +35,7 @@ class PCBuilder {
     }
     
     // fetch components data for a specific type
-    async fetchComponentsData(type) {
+    async fetchAllComponentsData(type) {
         try {
             const response = await fetch(`${this.apiUrl}?type=${type}`);
             if (!response.ok) {
@@ -51,7 +51,7 @@ class PCBuilder {
     }
 
     // cache DOM elements for performance
-    chcheElements() {
+    cacheElements() {
         // General Elements
         const ids = [
             'cpuBrand', 'cpuModel',
@@ -117,5 +117,112 @@ class PCBuilder {
         });
     }
 
-}
-}
+    // setup initial UI state
+    setupInitialUI() {
+        // display CPU brands
+        this.updateBrands('cpu', this.elements.cpuBrand);
+
+        // display GPU brands
+        this.updateBrands('gpu', this.elements.gpuBrand);
+
+        // display RAM brands
+        this.updateBrands('ram', this.elements.ramBrand);
+
+        // set RAM quantity options
+        this.setupQuantityOptions();
+
+        // set storage type options
+        this.setupStorageTypeOptions();
+
+    }
+
+    // Generic brand update method
+    updateBrands(type, selectElement) {
+        
+        const componentType = (type === 'hdd' || type === 'ssd') ? type :type;
+        const items = this.componentsData[componentType] || [];
+
+        // Extract brand list
+        const brands = [...new Set(items.map(item => item.brand)).sort()];
+
+        // Clear existing options
+        selectElement.innerHTML = '';
+
+        // Add default option
+        this.addDefaultOption(selectElement, `Select ${type.toUpperCase()} Brand`);
+
+        brands.forEach(brand => {
+            this.addOption(selectElement, brand, brand);
+        });
+    }
+
+    // Generic model update method
+    updateModels(type, brand, selectElement) {
+        if (!brand) return;
+
+        const items = this.componentsData[type] || [];
+
+        // Filter items by brand
+        const models = [...new Set(
+            items
+                .filter(item => item.Brand === brand)
+                .map(item => item.Model)
+        ).sort()];
+
+        // Clear existing options
+        selectElement.innerHTML = '';
+
+        // Add default option
+        this.addDefaultOption(selectElement, `Select ${type.toUpperCase()} Model`);
+
+        if (models.length > 0) {
+            models.forEach(model => {
+                this.addOption(selectElement, model, model);
+            })
+        } else {
+            this.addOption(selectElement, '', 'No models available for this brand', true);
+        }
+
+
+    }
+
+    // Generic RAM model update method
+    updateRAMModels() {
+        const brand = this.elements.ramBrand.value;
+        const quantity = this.elements.howMany.value;
+
+        if (!brand) return;
+
+        const items = this.componentsData['ram'] || [];
+
+        let models = [...new Set(
+            items
+                .fileter(item => item.Brand === brand)
+                .map(item => item.Model)
+        )].sort();
+
+        if (quantity) {
+            const filteredModels = models.filter(model => 
+                model.includes(`${quantity}x`)
+             );
+
+             if (filteredModels.length > 0) {
+                models = filteredModels;
+             }
+        }
+
+        this.elements.ramModel.innerHTML = '';
+
+        this.addDefaultOption(this.elements.ramModel, 'Select RAM Model');
+
+        if (models.length > 0) {
+            models.forEach(model => {
+                this.addOption(this.elements.ramModel, model, model);
+            });
+        } else {
+            this.addOption(this.elements.ramModel, '', 'No models available for this brand and quantity', true);
+        }
+
+        }
+    }
+
