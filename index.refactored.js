@@ -196,9 +196,19 @@ class PCBuilder {
     this.addDefaultOption(selectElement, `Select ${type.toUpperCase()} Model`);
 
     if (models.length > 0) {
+
       models.forEach((model) => {
+
         this.addOption(selectElement, model, model);
+
+        selectElement.addEventListener('change', () => {
+          const selectedItem = items.find(item => item.Model === model && item.Brand === brand);
+
+          this.selectedParts[type] = selectedItem;
+        })
       });
+
+
     } else {
       this.addOption(
         selectElement,
@@ -353,6 +363,37 @@ class PCBuilder {
     errorDiv.classList.add("alert", "alert-danger");
     errorDiv.textContent = message;
     container.insertBefore(errorDiv, container.firstChild);
+  }
+
+  addPC() {
+    this.assemblePC();
+    this.setPCUI();
+  }
+
+  assemblePC() {
+  }
+
+  setPCUI(){
+
+  }
+
+  calculateBenchmarkForGaming() {
+    const cpuWeight = 0.25;
+    const gpuWeight = 0.6;
+    const ramWeight = 0.125;
+    const storageWeight = 0.025;
+
+    const cpuModel = this.elements.cpuModel.value;
+    const gpuModel = this.elements.gpuModel.value;
+    const ramModel = this.elements.ramModel.value;
+    const storageModel = this.elements.storageModel.value;
+
+    if (!cpuModel || !gpuModel || !ramModel || !storageModel) {
+      this.displayError("Please select CPU, GPU, and RAM models.");
+      return;
+    }
+
+    const benchMark = 
   }
 }
 
