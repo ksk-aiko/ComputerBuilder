@@ -366,15 +366,27 @@ class PCBuilder {
   }
 
   addPC() {
-    this.assemblePC();
-    this.setPCUI();
+    const PC = this.assemblePC();
+    this.setPCUI(PC);
   }
 
   assemblePC() {
+    const cpuModel = this.selectedParts.cpu.Model;
+    const gpuModel = this.selectedParts.gpu.Model;
+    const ramModel = this.selectedParts.ram.Model;
+    const storageModel = this.selectedParts.storage.Model;
+
+    return {
+      'cpu': cpuModel,
+      'gpu': gpuModel,
+      'ram': ramModel,
+      'storage': storageModel,
+    }
+
   }
 
-  setPCUI(){
-
+  setPCUI(PC){
+    
   }
 
   calculateBenchmarkForGaming() {
