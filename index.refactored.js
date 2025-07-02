@@ -135,7 +135,7 @@ class PCBuilder {
 
     // Add PC Button
     this.elements.addPCButton.addEventListener("click", () => {
-      this.addPCToList();
+      this.addPC();
     });
   }
 
@@ -251,6 +251,11 @@ class PCBuilder {
     if (models.length > 0) {
       models.forEach((model) => {
         this.addOption(this.elements.ramModel, model, model);
+        this.elements.ramModel.addEventListener('change', () => {
+          const selectedItem = items.find(item => item.Model === model && item.Brand === brand);
+
+          this.selectedParts.ram = selectedItem;
+        });
       });
     } else {
       this.addOption(
@@ -309,6 +314,11 @@ class PCBuilder {
     if (models.length > 0) {
       models.forEach((model) => {
         this.addOption(this.elements.storageModel, model, model);
+        this.elements.storageModel.addEventListener('change', () => {
+          const selectedItem = items.find(item => item.Model === model && item.Brand === brand);
+
+          this.selectedParts.storage = selectedItem;
+        });
       });
     } else {
       this.addOption(
@@ -366,6 +376,7 @@ class PCBuilder {
   }
 
   addPC() {
+    console.log(this.selectedParts)
     const PC = this.assemblePC();
     this.setPCUI(PC);
   }
@@ -386,9 +397,35 @@ class PCBuilder {
   }
 
   setPCUI(PC){
+    if (!this.elements.pcList) return;
     
-  }
+    const vritualPC = document.createElement('div');
+    // Draw a virtual PC
+    vritualPC.classList.add('card', 'mb-3', 'shadow');
+    vritualPC.innerHTML = `
+      <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
+      <span>Virtual PC</span>
+      <div>
+        <span class="badge rounded-circle bg-danger mx-1">&nbsp;</span>
+        <span class="badge rounded-circle bg-warning mx-1">&nbsp;</span>
+        <span class="badge rounded-circle bg-success mx-1">&nbsp;</span>
+      </div>
+      </div>
+      <div class="card-body bg-light">
+      <div class="terminal-style p-3 bg-dark text-light rounded">
+        <p class="mb-2"><span class="text-success">></span> <strong>CPU:</strong> ${PC.cpu}</p>
+        <p class="mb-2"><span class="text-success">></span> <strong>GPU:</strong> ${PC.gpu}</p>
+        <p class="mb-2"><span class="text-success">></span> <strong>RAM:</strong> ${PC.ram}</p>
+        <p class="mb-2"><span class="text-success">></span> <strong>Storage:</strong> ${PC.storage}</p>
+      </div>
+      </div>
+    `;
+    
+    // Append to PC list
+    this.elements.pcList.appendChild(vritualPC);
 
+  }
+  // TODO: Implement the benchmark calculation logic
   calculateBenchmarkForGaming() {
     const cpuWeight = 0.25;
     const gpuWeight = 0.6;
@@ -405,7 +442,6 @@ class PCBuilder {
       return;
     }
 
-    const benchMark = 
   }
 }
 
