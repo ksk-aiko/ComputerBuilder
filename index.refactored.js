@@ -397,6 +397,9 @@ class PCBuilder {
   }
 
   setPCUI(PC){
+
+    this.elements.pcList.innerHTML = ''; // Clear existing PC list
+
     if (!this.elements.pcList) return;
     
     const vritualPC = document.createElement('div');
@@ -418,6 +421,12 @@ class PCBuilder {
         <p class="mb-2"><span class="text-success">></span> <strong>RAM:</strong> ${PC.ram}</p>
         <p class="mb-2"><span class="text-success">></span> <strong>Storage:</strong> ${PC.storage}</p>
       </div>
+      <div class="gaming-benchmark mt-3">
+        <p class="mt-3 mb-0"><span class="text-success">></span> <strong>Gaming Benchmark:</strong> ${this.calculateBenchmarkForGaming()}%</p>
+      </div>
+      <div class="work-benchmark mt-3">
+        <p class="mt-3 mb-0"><span class="text-success">></span> <strong>Work Benchmark:</strong> ${this.calculateBenchmarkForWork()}%</p>
+      </div>
       </div>
     `;
     
@@ -432,16 +441,30 @@ class PCBuilder {
     const ramWeight = 0.125;
     const storageWeight = 0.025;
 
-    const cpuModel = this.elements.cpuModel.value;
-    const gpuModel = this.elements.gpuModel.value;
-    const ramModel = this.elements.ramModel.value;
-    const storageModel = this.elements.storageModel.value;
+    const cpuScore = this.selectedParts.cpu ? this.selectedParts.cpu.Benchmark * cpuWeight : 0;
+    const gpuScore = this.selectedParts.gpu ? this.selectedParts.gpu.Benchmark * gpuWeight : 0;
+    const ramScore = this.selectedParts.ram ? this.selectedParts.ram.Benchmark * ramWeight : 0;
+    const storageScore = this.selectedParts.storage ? this.selectedParts.storage.Benchmark * storageWeight : 0;
 
-    if (!cpuModel || !gpuModel || !ramModel || !storageModel) {
-      this.displayError("Please select CPU, GPU, and RAM models.");
-      return;
-    }
+    const totalScore = cpuScore + gpuScore + ramScore + storageScore;
 
+    return totalScore.toFixed(2);
+  }
+
+  calculateBenchmarkForWork() {
+    const cpuWeight = 0.6;
+    const gpuWeight = 0.25;
+    const ramWeight = 0.1;
+    const storageWeight = 0.05;
+
+    const cpuScore = this.selectedParts.cpu ? this.selectedParts.cpu.Benchmark * cpuWeight : 0;
+    const gpuScore = this.selectedParts.gpu ? this.selectedParts.gpu.Benchmark * gpuWeight : 0;
+    const ramScore = this.selectedParts.ram ? this.selectedParts.ram.Benchmark * ramWeight : 0;
+    const storageScore = this.selectedParts.storage ? this.selectedParts.storage.Benchmark * storageWeight : 0;
+
+    const totalScore = cpuScore + gpuScore + ramScore + storageScore;
+
+    return totalScore.toFixed(2);
   }
 }
 
