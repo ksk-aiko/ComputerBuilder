@@ -414,18 +414,22 @@ class PCBuilder {
         <span class="badge rounded-circle bg-success mx-1">&nbsp;</span>
       </div>
       </div>
+
       <div class="card-body bg-light">
-      <div class="terminal-style p-3 bg-dark text-light rounded">
+      <div class="terminal-style p-3 bg-dark text-light rounded mb-3">
         <p class="mb-2"><span class="text-success">></span> <strong>CPU:</strong> ${PC.cpu}</p>
         <p class="mb-2"><span class="text-success">></span> <strong>GPU:</strong> ${PC.gpu}</p>
         <p class="mb-2"><span class="text-success">></span> <strong>RAM:</strong> ${PC.ram}</p>
-        <p class="mb-2"><span class="text-success">></span> <strong>Storage:</strong> ${PC.storage}</p>
+        <p class="mb-0"><span class="text-success">></span> <strong>Storage:</strong> ${PC.storage}</p>
       </div>
-      <div class="gaming-benchmark mt-3">
-        <p class="mt-3 mb-0"><span class="text-success">></span> <strong>Gaming Benchmark:</strong> ${this.calculateBenchmarkForGaming()}%</p>
-      </div>
-      <div class="work-benchmark mt-3">
-        <p class="mt-3 mb-0"><span class="text-success">></span> <strong>Work Benchmark:</strong> ${this.calculateBenchmarkForWork()}%</p>
+
+      <div class="benchmark p-3 bg-dark text-warning rounded">
+        <div class="gaming-benchmark">
+        <p class="mb-2"><span class="text-success">></span> <strong>Gaming Benchmark:</strong> ${this.calculateBenchmarkForGaming()}%</p>
+        </div>
+        <div class="work-benchmark">
+        <p class="mb-0"><span class="text-success">></span> <strong>Working Benchmark:</strong> ${this.calculateBenchmarkForWork()}%</p>
+        </div>
       </div>
       </div>
     `;
